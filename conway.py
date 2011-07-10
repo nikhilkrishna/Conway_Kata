@@ -58,12 +58,46 @@ class ConwayIO():
 			return False
 		return True
 
-class TestConwayFunctions(unittest.TestCase):
+	def get_valid_neigbours(self,i,j):
+		valid_neighbours = []
+		if (check_valid_cell(i - 1, j - 1)):
+			valid_neighbours.append([i - 1, j - 1])
 
+		if (check_valid_cell(i - 1, j)):
+			valid_neighbours.append([i - 1, j])
+
+		if (check_valid_cell(i - 1, j + 1)):
+			valid_neighbours.append([i - 1, j + 1])
+
+		if (check_valid_cell(i, j - 1)):
+			valid_neighbours.append([i, j - 1])
+
+		if (check_valid_cell(i, j + 1)):
+			valid_neighbours.append([i, j + 1])
+
+		if (check_valid_cell(i + 1, j - 1)):
+			valid_neighbours.append([i + 1, j - 1])
+
+		if (check_valid_cell(i + 1, j)):
+			valid_neighbours.append([i + 1, j])
+
+		if (check_valid_cell(i + 1, j + 1)):
+			valid_neighbours.append([i + 1, j + 1])
+
+		return valid_neighbours;
+
+class TestConwayFunctions(unittest.TestCase):
+		
 	def setUp(self):
 		self.filename = 'conwayinput.txt'
 		self.conwayIO = ConwayIO()
-
+		files = open(self.filename)
+		lines = files.readlines()
+		self.rows = len(lines)
+		self.cols = len(lines[1].strip())
+		self.edge_cases = [[0,0],[0,self.cols - 1],[0,self.cols],[1,0],[1,self.cols],[self.rows,0],[self.rows,1],[self.rows,self.cols]] 
+		files.close()
+	
 	def test_input_file_exists(self):
         #  Check for the existance of the input file for the conway game
 		self.assertTrue(self.conwayIO.check_file_exists(self.filename))
@@ -97,27 +131,22 @@ class TestConwayFunctions(unittest.TestCase):
 		lines = lines[1:len(lines)] 
 	
 		self.assertTrue(self.conwayIO.check_content_integrity(lines), "Content integrity failed")
-#    def test_choice(self):
-#        element = random.choice(self.seq)
-#        self.assertTrue(element in self.seq)
-#
-#    def test_sample(self):
-#        self.assertRaises(ValueError, random.sample, self.seq, 20)
-#        for element in random.sample(self.seq, 5):
-#            self.assertTrue(element in self.seq)
 
 	def test_valid_cell(self):
 		#Test the function to check if cells for a cell exist
 		self.conwayIO.read_matrix_size(self.conwayIO.file_open(self.filename).readlines()[0])		
-		self.assertTrue(self.conwayIO.check_valid_cell(0,0))		
-		self.assertTrue(self.conwayIO.check_valid_cell(0,self.conwayIO.columns - 1))
-		self.assertTrue(self.conwayIO.check_valid_cell(0,self.conwayIO.columns))
-		self.assertTrue(self.conwayIO.check_valid_cell(self.conwayIO.rows,0))
-		self.assertTrue(self.conwayIO.check_valid_cell(self.conwayIO.rows,1))
-		self.assertTrue(self.conwayIO.check_valid_cell(self.conwayIO.rows, self.conwayIO.columns))
-		self.assertTrue(self.conwayIO.check_valid_cell(self.conwayIO.rows - 1, self.conwayIO.columns))
-		self.assertTrue(self.conwayIO.check_valid_cell(1, 0))
-		self.assertTrue(self.conwayIO.check_valid_cell(self.conwayIO.rows - 1, self.conwayIO.columns - 1))
+		[self.assertTrue(self.conwayIO.check_valid_cell(i,j)) for i,j in self.edge_cases]		
+	def test_invalid_cell(self):
+		#Test the function to check if cells for a cell exist
+		self.conwayIO.read_matrix_size(self.conwayIO.file_open(self.filename).readlines()[0])		
+		self.assertFalse(self.conwayIO.check_valid_cell(-1,0))		
+		self.assertFalse(self.conwayIO.check_valid_cell(0,self.conwayIO.columns + 1))
+		self.assertFalse(self.conwayIO.check_valid_cell(-1,self.conwayIO.columns))
+		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows + 1 ,0))
+		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows + 1,1))
+		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows + 1, self.conwayIO.columns + 1))
+		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows - 1, self.conwayIO.columns + 1))
+		self.assertFalse(self.conwayIO.check_valid_cell(-1, -2))
 
 if __name__ == '__main__':
     unittest.main()
