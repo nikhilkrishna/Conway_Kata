@@ -22,7 +22,7 @@ class ConwayIO():
 		return open(filename)
 	
 	def read_matrix_rows_cols(self,line):
-		matrix_size =  input.readline().split()
+		matrix_size =  line.split()
 		self.rows = int(matrix_size[0])	
 		self.columns = int(matrix_size[1])
 
@@ -34,9 +34,9 @@ class ConwayIO():
 		return False	 
 
 	def check_matrix_integrity(self,lines):
-		if(len(lines)==rows):
+		if(len(lines)==self.rows):
 			for line in lines:
-				if((len(line.strip()) != columns)):
+				if((len(line.strip()) != self.columns)):
 					return False
 			return True
 		return False
@@ -63,20 +63,27 @@ class TestConwayFunctions(unittest.TestCase):
 	def test_input_file_matrix_size(self):
 		#check the first line of input file is a matrix size
 		self.assertTrue(self.conwayIO.check_matrix_size(self.conwayIO.file_open(self.filename).readlines()[0]))
-		#matrix_size =  input.readline().split()
-		#self.assertEqual(len(matrix_size), 2 , 'wrong number of arguments')
-		#self.assertTrue(matrix_size[0].isdigit(), 'rows should be integer')
-		#self.assertTrue(matrix_size[1].isdigit(), 'columns should be integer')
+
+	def test_read_matrix_conf(self):
+		input = open(self.filename)
+		line = input.readline()
+		matrix_size =  line.split()
+		rows = int(matrix_size[0])
+		columns = int(matrix_size[1])
+		self.conwayIO.read_matrix_rows_cols(self.conwayIO.file_open(self.filename).readlines()[0])
+		self.assertEqual(self.conwayIO.rows, rows)
+		self.assertEqual(self.conwayIO.columns, columns)
+
 
 	def test_input_rows_and_columns(self):
 		input = open(self.filename)
-
-		matrix_size =  input.readline().split()
-		rows = int(matrix_size[0])	
-		columns = int(matrix_size[1])
 		lines = input.readlines()
-		for line in lines:
-			self.assertEquals(len(line.strip()),columns,'wrong number of columns in ' + line + ':')
+		lines = lines[1:len(lines)] 
+		self.conwayIO.rows = len(lines)
+		self.conwayIO.columns = len(lines[0].strip())
+
+		self.assertTrue(self.conwayIO.check_matrix_integrity(lines), "Matrix integrity failed")
+
 #    def test_choice(self):
 #        element = random.choice(self.seq)
 #        self.assertTrue(element in self.seq)
