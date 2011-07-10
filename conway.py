@@ -43,11 +43,11 @@ class ConwayIO():
 
 	def check_content_integrity(self,lines):
 	# ^((-*)+)
-		invalid_pattern = re.compile('^((-*)+)')				
+		invalid_pattern = re.compile('^[[-]*[\*]*]+')				
 		for line in lines :
 			match = invalid_pattern.match(line) 
 			if(match != None):
-				 return False
+				return False
 		return True
 		
 class TestConwayFunctions(unittest.TestCase):
@@ -84,6 +84,12 @@ class TestConwayFunctions(unittest.TestCase):
 
 		self.assertTrue(self.conwayIO.check_matrix_integrity(lines), "Matrix integrity failed")
 
+	def test_input_rows_and_columns(self):
+		input = open(self.filename)
+		lines = input.readlines()
+		lines = lines[1:len(lines)] 
+	
+		self.assertTrue(self.conwayIO.check_content_integrity(lines), "Content integrity failed")
 #    def test_choice(self):
 #        element = random.choice(self.seq)
 #        self.assertTrue(element in self.seq)
