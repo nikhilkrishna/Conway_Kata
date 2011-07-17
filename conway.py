@@ -30,7 +30,8 @@ class ConwayIO():
 		matrix_size = line.split()
 		if(len(matrix_size) == 2):
 			if(matrix_size[0].isdigit() and matrix_size[1].isdigit()):
-				return True 
+				if(matrix_size[0] >= 3 and matrix_size[1] >= 3):
+					return True 
 		return False	 
 
 	def check_matrix_integrity(self,lines):
@@ -58,33 +59,33 @@ class ConwayIO():
  			return False
 		return True
 
-	def get_valid_neigbours(self,i,j):
+	def get_valid_neighbours(self,i,j):
 		valid_neighbours = []
-		if (check_valid_cell(i - 1, j - 1)):
+		if (self.check_valid_cell(i - 1, j - 1)):
 			valid_neighbours.append([i - 1, j - 1])
 
-		if (check_valid_cell(i - 1, j)):
+		if (self.check_valid_cell(i - 1, j)):
 			valid_neighbours.append([i - 1, j])
 
-		if (check_valid_cell(i - 1, j + 1)):
+		if (self.check_valid_cell(i - 1, j + 1)):
 			valid_neighbours.append([i - 1, j + 1])
 
-		if (check_valid_cell(i, j - 1)):
+		if (self.check_valid_cell(i, j - 1)):
 			valid_neighbours.append([i, j - 1])
 
-		if (check_valid_cell(i, j + 1)):
+		if (self.check_valid_cell(i, j + 1)):
 			valid_neighbours.append([i, j + 1])
 
-		if (check_valid_cell(i + 1, j - 1)):
+		if (self.check_valid_cell(i + 1, j - 1)):
 			valid_neighbours.append([i + 1, j - 1])
 
-		if (check_valid_cell(i + 1, j)):
+		if (self.check_valid_cell(i + 1, j)):
 			valid_neighbours.append([i + 1, j])
 
-		if (check_valid_cell(i + 1, j + 1)):
+		if (self.check_valid_cell(i + 1, j + 1)):
 			valid_neighbours.append([i + 1, j + 1])
 
-		return valid_neighbours;
+		return valid_neighbours
 
 class TestConwayFunctions(unittest.TestCase):
 		
@@ -144,16 +145,12 @@ class TestConwayFunctions(unittest.TestCase):
 
 		[self.assertFalse(self.conwayIO.check_valid_cell(i,j), str(i)+","+str(j)+" is invalid but passed through") for i,j in self.invalid_edge_cases]		
 
-		#print [(i, j) for i,j in self.invalid_edge_cases]		
-#		self.assertFalse(self.conwayIO.check_valid_cell(-1,0))		
-#		self.assertFalse(self.conwayIO.check_valid_cell(0,self.conwayIO.columns + 1))
-#		self.assertFalse(self.conwayIO.check_valid_cell(-1,self.conwayIO.columns))
-#		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows + 1 ,0))
-#		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows + 1,1))
-#		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows + 1, self.conwayIO.columns + 1))
-#		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows - 1, self.conwayIO.columns + 1))
-#		self.assertFalse(self.conwayIO.check_valid_cell(-2, -2))
-
+	def test_get_valid_neighbour(self):
+		#Test the function to check if the correct number of neighbours are retrieved
+		self.conwayIO.read_matrix_size(self.conwayIO.file_open(self.filename).readlines()[0])
+		self.assertEquals(len(self.conwayIO.get_valid_neighbours(0,0)),3)	
+		self.assertEquals(len(self.conwayIO.get_valid_neighbours(0,1)),5)	
+		self.assertEquals(len(self.conwayIO.get_valid_neighbours(1,1)),8)	
 
 if __name__ == '__main__':
     unittest.main()
