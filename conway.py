@@ -52,10 +52,10 @@ class ConwayIO():
 		return True
 	
 	def check_valid_cell(self,i,j):
-		if i < 0 or i > self.rows:
+		if i < 0 or i > self.rows - 1:
 			return False
-		if j < 0 or j > self.columns:
-			return False
+		if j < 0 or j > self.columns - 1:
+ 			return False
 		return True
 
 	def get_valid_neigbours(self,i,j):
@@ -93,9 +93,10 @@ class TestConwayFunctions(unittest.TestCase):
 		self.conwayIO = ConwayIO()
 		files = open(self.filename)
 		lines = files.readlines()
-		self.rows = len(lines)
+		self.rows = len(lines) - 1
 		self.cols = len(lines[1].strip())
-		self.edge_cases = [[0,0],[0,self.cols - 1],[0,self.cols],[1,0],[1,self.cols],[self.rows,0],[self.rows,1],[self.rows,self.cols]] 
+		self.valid_edge_cases = [[0,0],[0,self.cols - 1],[0,self.cols - 1],[1,0],[1,self.cols - 1],[self.rows - 1,0],[self.rows - 1,1],[self.rows - 1,self.cols - 1], [self.rows - 2,self.cols - 2]] 
+		self.invalid_edge_cases = [[-1,0],[0,self.cols + 1],[-1,self.cols - 1],[self.rows,0],[self.rows,1],[self.rows,self.cols], [self.rows - 1,self.cols], [self.rows + 1, self.cols + 1]] 
 		files.close()
 	
 	def test_input_file_exists(self):
@@ -135,18 +136,24 @@ class TestConwayFunctions(unittest.TestCase):
 	def test_valid_cell(self):
 		#Test the function to check if cells for a cell exist
 		self.conwayIO.read_matrix_size(self.conwayIO.file_open(self.filename).readlines()[0])		
-		[self.assertTrue(self.conwayIO.check_valid_cell(i,j)) for i,j in self.edge_cases]		
+		[self.assertTrue(self.conwayIO.check_valid_cell(i,j), str(i)+","+str(j)+" is valid but did not pass through") for i,j in self.valid_edge_cases]		
+		#print [(i, j) for i,j in self.valid_edge_cases]		
 	def test_invalid_cell(self):
 		#Test the function to check if cells for a cell exist
 		self.conwayIO.read_matrix_size(self.conwayIO.file_open(self.filename).readlines()[0])		
-		self.assertFalse(self.conwayIO.check_valid_cell(-1,0))		
-		self.assertFalse(self.conwayIO.check_valid_cell(0,self.conwayIO.columns + 1))
-		self.assertFalse(self.conwayIO.check_valid_cell(-1,self.conwayIO.columns))
-		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows + 1 ,0))
-		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows + 1,1))
-		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows + 1, self.conwayIO.columns + 1))
-		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows - 1, self.conwayIO.columns + 1))
-		self.assertFalse(self.conwayIO.check_valid_cell(-1, -2))
+
+		[self.assertFalse(self.conwayIO.check_valid_cell(i,j), str(i)+","+str(j)+" is invalid but passed through") for i,j in self.invalid_edge_cases]		
+
+		#print [(i, j) for i,j in self.invalid_edge_cases]		
+#		self.assertFalse(self.conwayIO.check_valid_cell(-1,0))		
+#		self.assertFalse(self.conwayIO.check_valid_cell(0,self.conwayIO.columns + 1))
+#		self.assertFalse(self.conwayIO.check_valid_cell(-1,self.conwayIO.columns))
+#		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows + 1 ,0))
+#		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows + 1,1))
+#		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows + 1, self.conwayIO.columns + 1))
+#		self.assertFalse(self.conwayIO.check_valid_cell(self.conwayIO.rows - 1, self.conwayIO.columns + 1))
+#		self.assertFalse(self.conwayIO.check_valid_cell(-2, -2))
+
 
 if __name__ == '__main__':
     unittest.main()
