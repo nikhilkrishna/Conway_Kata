@@ -1,5 +1,6 @@
 import os
 import unittest
+import string
 import re
 
 class ConwayIO():
@@ -87,15 +88,38 @@ class ConwayIO():
 
 		return valid_neighbours
 
+	def cell_isalive(self,content):
+		if(content == "*"):
+			return True
+		elif(content == "-"):
+			return False
+		else:
+			raise ValueError("Invalid Cell Content")
+
+	def apply_conway_rules(self,lines,i,j): 
+		valid_neighbours = self.get_valid_neighbours(i,j)		
+		live_cell_count = 0
+	
+		for cell in valid_neighbours:
+			if(self.cell_isalive(str(lines[int(cell[0])][int(cell[1])]))):
+				live_cell_count += 1
+		
+		# Check for underpopulation
+		if( live_cell_count < 2 ):
+			#lines[i][j]="-"
+			string.replace(lines[i][j], "*", "-");
+
+		return lines
+
 class TestConwayFunctions(unittest.TestCase):
 		
 	def setUp(self):
 		self.filename = 'conwayinput.txt'
 		self.conwayIO = ConwayIO()
 		files = open(self.filename)
-		lines = files.readlines()
-		self.rows = len(lines) - 1
-		self.cols = len(lines[1].strip())
+		self.lines = files.readlines()
+		self.rows = len(self.lines) - 1
+		self.cols = len(self.lines[1].strip())
 		self.valid_edge_cases = [[0,0],[0,self.cols - 1],[0,self.cols - 1],[1,0],[1,self.cols - 1],[self.rows - 1,0],[self.rows - 1,1],[self.rows - 1,self.cols - 1], [self.rows - 2,self.cols - 2]] 
 		self.invalid_edge_cases = [[-1,0],[0,self.cols + 1],[-1,self.cols - 1],[self.rows,0],[self.rows,1],[self.rows,self.cols], [self.rows - 1,self.cols], [self.rows + 1, self.cols + 1]] 
 		files.close()
@@ -151,6 +175,25 @@ class TestConwayFunctions(unittest.TestCase):
 		self.assertEquals(len(self.conwayIO.get_valid_neighbours(0,0)),3)	
 		self.assertEquals(len(self.conwayIO.get_valid_neighbours(0,1)),5)	
 		self.assertEquals(len(self.conwayIO.get_valid_neighbours(1,1)),8)	
+
+	def test_cell_is_alive(self):
+		#Tests the function to check if the current cell is alive
+		self.assertTrue(self.conwayIO.cell_isalive("*"))
+
+	def test_cell_is_dead(self):
+		#Tests the function to check if the current cell is dead 
+		self.assertFalse(self.conwayIO.cell_isalive("-"))
+
+	def test_cell_is_invalid(self):
+		#Tests the function throws exception if the cell content is invalid 
+		self.assertRaises(ValueError, self.conwayIO.cell_isalive,".")
+		
+	def test_underpopulation(self):
+		#Tests the conway algorithm for the validity of the underpopulation rule
+		self.conwayIO.read_matrix_size(self.conwayIO.file_open(self.filename).readlines()[0])
+		self.lines = self.lines[1:len(self.lines)] 
+		evolved_lines = self.conwayIO.apply_conway_rules(self.lines,2,2)
+		self.assertFalse(self.conwayIO.cell_isalive(evolved_lines[2][2]))
 
 if __name__ == '__main__':
     unittest.main()
