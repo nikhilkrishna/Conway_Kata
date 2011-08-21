@@ -109,6 +109,11 @@ class ConwayIO():
 			#lines[i][j]="-"
 			string.replace(lines[i][j], "*", "-");
 
+		print live_cell_count
+		#Check for overpopulation
+		if(live_cell_count > 3):
+			string.replace(lines[i][j],"*","-");
+
 		return lines
 
 class TestConwayFunctions(unittest.TestCase):
@@ -194,6 +199,13 @@ class TestConwayFunctions(unittest.TestCase):
 		self.lines = self.lines[1:len(self.lines)] 
 		evolved_lines = self.conwayIO.apply_conway_rules(self.lines,2,2)
 		self.assertFalse(self.conwayIO.cell_isalive(evolved_lines[2][2]))
+
+	def test_overcrowding(self):
+		#Tests the conway algorithm for the validity of the overcrowding rule
+		self.conwayIO.read_matrix_size(self.conwayIO.file_open(self.filename).readlines()[0])
+		self.lines = self.lines[1:len(self.lines)] 
+		evolved_lines = self.conwayIO.apply_conway_rules(self.lines,3,6)
+		self.assertFalse(self.conwayIO.cell_isalive(evolved_lines[3][6]))
 
 if __name__ == '__main__':
     unittest.main()
