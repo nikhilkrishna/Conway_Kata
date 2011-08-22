@@ -109,7 +109,6 @@ class ConwayIO():
 			#lines[i][j]="-"
 			string.replace(lines[i][j], "*", "-");
 
-		print live_cell_count
 		#Check for overpopulation
 		if(live_cell_count > 3):
 			string.replace(lines[i][j],"*","-");
@@ -147,7 +146,6 @@ class TestConwayFunctions(unittest.TestCase):
 		self.assertEqual(self.conwayIO.rows, rows)
 		self.assertEqual(self.conwayIO.columns, columns)
 
-
 	def test_input_rows_and_columns(self):
 		input = open(self.filename)
 		lines = input.readlines()
@@ -168,6 +166,7 @@ class TestConwayFunctions(unittest.TestCase):
 		self.conwayIO.read_matrix_size(self.conwayIO.file_open(self.filename).readlines()[0])		
 		[self.assertTrue(self.conwayIO.check_valid_cell(i,j), str(i)+","+str(j)+" is valid but did not pass through") for i,j in self.valid_edge_cases]		
 		#print [(i, j) for i,j in self.valid_edge_cases]		
+	
 	def test_invalid_cell(self):
 		#Test the function to check if cells for a cell exist
 		self.conwayIO.read_matrix_size(self.conwayIO.file_open(self.filename).readlines()[0])		
@@ -181,6 +180,16 @@ class TestConwayFunctions(unittest.TestCase):
 		self.assertEquals(len(self.conwayIO.get_valid_neighbours(0,1)),5)	
 		self.assertEquals(len(self.conwayIO.get_valid_neighbours(1,1)),8)	
 
+	def test_get_valid_neighbour_middle(self):
+		#Test the function to check if the correct number of neighbours are retrieved
+		self.conwayIO.read_matrix_size(self.conwayIO.file_open(self.filename).readlines()[0])
+		self.assertEquals(len(self.conwayIO.get_valid_neighbours(3,6)),8)	
+	
+	def test_get_valid_neighbour_off_by_one(self):
+		#Test the function to check if the correct number of neighbours are retrieved
+		self.conwayIO.read_matrix_size(self.conwayIO.file_open(self.filename).readlines()[0])
+		self.assertEquals(len(self.conwayIO.get_valid_neighbours(3,5)),8)	
+	
 	def test_cell_is_alive(self):
 		#Tests the function to check if the current cell is alive
 		self.assertTrue(self.conwayIO.cell_isalive("*"))
