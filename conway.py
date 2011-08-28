@@ -4,128 +4,141 @@ import string
 import re
 
 class ConwayIO():
-	def ConwayIO(self):
-		self.rows = 0
-		self.columns = 0
-		self.cells = []
+    def ConwayIO(self):
+        self.rows = 0
+        self.columns = 0
+        self.cells = []
 
-	def check_file_exists(self,filename):
-		return os.path.isfile(filename)
+    def check_file_exists(self,filename):
+        return os.path.isfile(filename)
 
-	def process_file(self,filename):
-		if(self.check_file_exists(filename)):
-			lines = self.file_open(filename).readlines()
-			if self.check_matrix_size(lines[0]):
-			 	self.read_matrix_size(lines[0])
-				if (self.check_matrix_integrity(lines[1:len(lines)]) and self.check_content_integrity(lines[1:len(lines)])):
-					self.cells=lines[1:len(lines)]
-					return True
-				else:
-					print "Matrix integrity check failed"
-			else:
-				print "Matrix size check failed"
- 		else:
-			print "File does not exist"
-		return False
-	
-	def file_open(self,filename):
-		return open(filename)
-	
-	def read_matrix_size(self,line):
-		matrix_size =  line.split()
-		self.rows = int(matrix_size[0])	
-		self.columns = int(matrix_size[1])
+    def process_file(self,filename):
+        if(self.check_file_exists(filename)):
+            lines = self.file_open(filename).readlines()
+            if self.check_matrix_size(lines[0]):
+                self.read_matrix_size(lines[0])
+                if (self.check_matrix_integrity(lines[1:len(lines)]) and self.check_content_integrity(lines[1:len(lines)])):
+                    self.cells=lines[1:len(lines)]
+                    return True
+                else:
+                    print "Matrix integrity check failed"
+            else:
+                print "Matrix size check failed"
+        else:
+            print "File does not exist"
+        return False
 
-	def check_matrix_size(self,line):
-		matrix_size = line.split()
-		if(len(matrix_size) == 2):
-			if(matrix_size[0].isdigit() and matrix_size[1].isdigit()):
-				if(matrix_size[0] >= 3 and matrix_size[1] >= 3):
-					return True 
-		return False	 
+    def file_open(self,filename):
+        return open(filename)
 
-	def check_matrix_integrity(self,lines):
-		if(len(lines) == self.rows):
-			for line in lines:
-				if((len(line.strip()) != self.columns)):
-					print "Column Check failed"
-					return False
-			return True		
-		print "Row Check Failed" + str(len(lines)) + str(self.rows)
-		return False
+    def read_matrix_size(self,line):
+        matrix_size =  line.split()
+        self.rows = int(matrix_size[0])	
+        self.columns = int(matrix_size[1])
 
-	def check_content_integrity(self,lines):
-	# ^((-*)+)
-		invalid_pattern = re.compile('^[[-]*[\*]*]+')				
-		
-		for line in lines :
-			match = invalid_pattern.match(line) 
-			if(match != None):
-				print "Invalid Pattern"
-				return False
-		return True
-	
-	def check_valid_cell(self,i,j):
-		if i < 0 or i > self.rows - 1:
-			return False
-		if j < 0 or j > self.columns - 1:
- 			return False
-		return True
+    def check_matrix_size(self,line):
+        matrix_size = line.split()
+        if(len(matrix_size) == 2):
+            if(matrix_size[0].isdigit() and matrix_size[1].isdigit()):
+                if(matrix_size[0] >= 3 and matrix_size[1] >= 3):
+                    return True 
+        return False
 
-	def get_valid_neighbours(self,i,j):
-		valid_neighbours = []
-		if (self.check_valid_cell(i - 1, j - 1)):
-			valid_neighbours.append([i - 1, j - 1])
+    def check_matrix_integrity(self,lines):
+        if(len(lines) == self.rows):
+            for line in lines:
+                if((len(line.strip()) != self.columns)):
+                    print "Column Check failed"
+                    return False
+            return True
+        print "Row Check Failed" + str(len(lines)) + str(self.rows)
+        return False
 
-		if (self.check_valid_cell(i - 1, j)):
-			valid_neighbours.append([i - 1, j])
+    def check_content_integrity(self,lines):
+    # ^((-*)+)
+        invalid_pattern = re.compile('^[[-]*[\*]*]+')				
+        
+        for line in lines :
+            match = invalid_pattern.match(line) 
+            if(match != None):
+                print "Invalid Pattern"
+                return False
+        return True
 
-		if (self.check_valid_cell(i - 1, j + 1)):
-			valid_neighbours.append([i - 1, j + 1])
+    def check_valid_cell(self,i,j):
+        if i < 0 or i > self.rows - 1:
+            return False
+        if j < 0 or j > self.columns - 1:
+            return False
+        return True
 
-		if (self.check_valid_cell(i, j - 1)):
-			valid_neighbours.append([i, j - 1])
+    def get_valid_neighbours(self,i,j):
+        valid_neighbours = []
+        if (self.check_valid_cell(i - 1, j - 1)):
+            valid_neighbours.append([i - 1, j - 1])
 
-		if (self.check_valid_cell(i, j + 1)):
-			valid_neighbours.append([i, j + 1])
+        if (self.check_valid_cell(i - 1, j)):
+            valid_neighbours.append([i - 1, j])
 
-		if (self.check_valid_cell(i + 1, j - 1)):
-			valid_neighbours.append([i + 1, j - 1])
+        if (self.check_valid_cell(i - 1, j + 1)):
+            valid_neighbours.append([i - 1, j + 1])
 
-		if (self.check_valid_cell(i + 1, j)):
-			valid_neighbours.append([i + 1, j])
+        if (self.check_valid_cell(i, j - 1)):
+            valid_neighbours.append([i, j - 1])
 
-		if (self.check_valid_cell(i + 1, j + 1)):
-			valid_neighbours.append([i + 1, j + 1])
+        if (self.check_valid_cell(i, j + 1)):
+            valid_neighbours.append([i, j + 1])
 
-		return valid_neighbours
+        if (self.check_valid_cell(i + 1, j - 1)):
+            valid_neighbours.append([i + 1, j - 1])
 
-	def cell_isalive(self,content):
-		if(content == "*"):
-			return True
-		elif(content == "-"):
-			return False
-		else:
-			raise ValueError("Invalid Cell Content")
+        if (self.check_valid_cell(i + 1, j)):
+            valid_neighbours.append([i + 1, j])
 
-	def apply_conway_rules(self,i,j): 
-		valid_neighbours = self.get_valid_neighbours(i,j)		
-		live_cell_count = 0
-	
-		for cell in valid_neighbours:
-			if(self.cell_isalive(str(self.cells[int(cell[0])][int(cell[1])]))):
-				live_cell_count += 1
-		
-		# Check for underpopulation
-		if( live_cell_count < 2 ):
-			#self.cells[i][j]="-"
-			string.replace(self.cells[i][j], "*", "-");
+        if (self.check_valid_cell(i + 1, j + 1)):
+            valid_neighbours.append([i + 1, j + 1])
 
-		#Check for overpopulation
-		if(live_cell_count > 3):
-			string.replace(self.cells[i][j],"*","-");
+        return valid_neighbours
 
-		return self.cells
+    def cell_isalive(self,content):
+        if(content == "*"):
+            return True
+        elif(content == "-"):
+            return False
+        else:
+            raise ValueError("Invalid Cell Content")
+
+    def apply_conway_rules(self,i,j,trace = False): 
+        valid_neighbours = self.get_valid_neighbours(i,j)		
+        live_cell_count = 0
+
+        for cell in valid_neighbours:
+            if(trace == True):
+                print cell
+                print str(self.cells[int(cell[0])][int(cell[1])])
+            if(self.cell_isalive(str(self.cells[int(cell[0])][int(cell[1])]))):
+                live_cell_count += 1
+
+        if(trace == True):
+            print live_cell_count
+            print  str(self.cells[i][j])
+
+        # Check for underpopulation
+        if( live_cell_count < 2 ):
+            #self.cells[i][j]="-"
+            string.replace(self.cells[i][j],"*", "-")
+
+        #Check for overpopulation
+        if(live_cell_count > 3):
+            string.replace(self.cells[i][j],"*","-")
+
+        #Check for regeneration 
+        if(live_cell_count == 3):
+            string.replace(self.cells[i][j],"-","*")
+            if(trace == True):
+                print  str(self.cells[i][j])
+
+        return self.cells
 
 class TestConwayFunctions(unittest.TestCase):
 		
@@ -228,6 +241,18 @@ class TestConwayFunctions(unittest.TestCase):
 		self.conwayIO.process_file(self.filename)
 		evolved_lines = self.conwayIO.apply_conway_rules(3,6)
 		self.assertFalse(self.conwayIO.cell_isalive(evolved_lines[3][6]))
+
+	def test_livingon(self):
+		#Tests the conway algorithm for the validity of the overcrowding rule
+		self.conwayIO.process_file(self.filename)
+		evolved_lines = self.conwayIO.apply_conway_rules(3,0)
+		self.assertTrue(self.conwayIO.cell_isalive(evolved_lines[3][0]))
+
+	def test_regeneration(self):
+		#Tests the conway algorithm for the validity of the overcrowding rule
+		self.conwayIO.process_file(self.filename)
+		evolved_lines = self.conwayIO.apply_conway_rules(0,6,True)
+		self.assertTrue(self.conwayIO.cell_isalive(evolved_lines[0][6]))
 
 if __name__ == '__main__':
     unittest.main()
