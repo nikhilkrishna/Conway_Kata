@@ -125,20 +125,27 @@ class ConwayIO():
 
         # Check for underpopulation
         if( live_cell_count < 2 ):
-            #self.cells[i][j]="-"
-            string.replace(self.cells[i][j],"*", "-")
+            evolvedstring = self.cells[i][0:j] + '-' + self.cells[i][j:]
+            self.cells[i] = evolvedstring       
+            if(trace == True):
+                print  str(self.cells[i][j])
 
         #Check for overpopulation
         if(live_cell_count > 3):
-            string.replace(self.cells[i][j],"*","-")
+            evolvedstring = self.cells[i][0:j] + '-' + self.cells[i][j:]
+            self.cells[i] = evolvedstring
+            if(trace == True):
+                print  str(self.cells[i][j])
 
         #Check for regeneration 
         if(live_cell_count == 3):
-            string.replace(self.cells[i][j],"-","*")
+            evolvedstring = self.cells[i][0:j] + '*' + self.cells[i][j:]
+            self.cells[i] = evolvedstring
             if(trace == True):
                 print  str(self.cells[i][j])
 
         return self.cells
+    
 
 class TestConwayFunctions(unittest.TestCase):
 		
@@ -239,19 +246,19 @@ class TestConwayFunctions(unittest.TestCase):
 	def test_overcrowding(self):
 		#Tests the conway algorithm for the validity of the overcrowding rule
 		self.conwayIO.process_file(self.filename)
-		evolved_lines = self.conwayIO.apply_conway_rules(3,6)
-		self.assertFalse(self.conwayIO.cell_isalive(evolved_lines[3][6]))
+		evolved_lines = self.conwayIO.apply_conway_rules(2,5)
+		self.assertFalse(self.conwayIO.cell_isalive(evolved_lines[2][5]))
 
 	def test_livingon(self):
-		#Tests the conway algorithm for the validity of the overcrowding rule
+		#Tests the conway algorithm for the validity of the livingon rule
 		self.conwayIO.process_file(self.filename)
 		evolved_lines = self.conwayIO.apply_conway_rules(3,0)
 		self.assertTrue(self.conwayIO.cell_isalive(evolved_lines[3][0]))
 
 	def test_regeneration(self):
-		#Tests the conway algorithm for the validity of the overcrowding rule
+		#Tests the conway algorithm for the validity of the regeneration rule
 		self.conwayIO.process_file(self.filename)
-		evolved_lines = self.conwayIO.apply_conway_rules(0,6,True)
+		evolved_lines = self.conwayIO.apply_conway_rules(0,6)
 		self.assertTrue(self.conwayIO.cell_isalive(evolved_lines[0][6]))
 
 if __name__ == '__main__':
